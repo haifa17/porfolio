@@ -28,7 +28,7 @@ export function ContactForm() {
         () => {
           console.log("Email sent");
           toast.success(
-            "Your message has been sent! We'll get back to you soon.",
+            "Your message has been sent! Thankyou for reaching out. I'll get back to you as soon as possible.",
           );
         },
         (error) => {
