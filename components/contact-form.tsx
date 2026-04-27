@@ -1,36 +1,42 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Send } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/hooks/use-toast"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Send } from "lucide-react";
+import { toast } from "react-toastify";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import emailjs from "@emailjs/browser";
 
 export function ContactForm() {
-  const { toast } = useToast()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    toast({
-      title: "Message sent!",
-      description: "Thanks for reaching out. I'll get back to you soon.",
-    })
-
-    setIsSubmitting(false)
-    e.currentTarget.reset()
-  }
-
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    emailjs
+      .sendForm(
+        process.env.NEXT_PUBLIC_SERVICE_ID || "",
+        process.env.NEXT_PUBLIC_TEMPLATE_ID || "",
+        e.currentTarget,
+        process.env.NEXT_PUBLIC_PUBLIC_KEY || "",
+      )
+      .then(
+        () => {
+          console.log("Email sent");
+          toast.success(
+            "Your message has been sent! We'll get back to you soon.",
+          );
+        },
+        (error) => {
+          console.error("Error:", error);
+          toast.error("Failed to send message.");
+        },
+      );
+  };
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -47,6 +53,7 @@ export function ContactForm() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <Input
+                name="name"
                 placeholder="Your Name"
                 required
                 className="bg-zinc-900/50 border-zinc-700 focus:border-purple-500 focus:ring-purple-500/20"
@@ -54,6 +61,7 @@ export function ContactForm() {
             </div>
             <div className="space-y-2">
               <Input
+                name="email"
                 type="email"
                 placeholder="Your Email"
                 required
@@ -62,6 +70,7 @@ export function ContactForm() {
             </div>
             <div className="space-y-2">
               <Input
+                name="subject"
                 placeholder="Subject"
                 required
                 className="bg-zinc-900/50 border-zinc-700 focus:border-purple-500 focus:ring-purple-500/20"
@@ -69,6 +78,7 @@ export function ContactForm() {
             </div>
             <div className="space-y-2">
               <Textarea
+                name="message"
                 placeholder="Your Message"
                 rows={5}
                 required
@@ -92,5 +102,5 @@ export function ContactForm() {
         </div>
       </div>
     </motion.div>
-  )
+  );
 }

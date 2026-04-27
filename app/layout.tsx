@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import Footer from '@/components/layout/footer'
+import { ToastContainer } from 'react-toastify'
 
 export const metadata: Metadata = {
   title: 'Haifa Khiari - Software Engineer',
@@ -16,6 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body>{children}
         <Footer />
+        <ToastContainer />
       </body>
     </html>
   )
